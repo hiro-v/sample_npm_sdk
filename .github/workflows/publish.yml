@@ -36,7 +36,7 @@ jobs:
   #         draft: false
   #         prerelease: false
 
-  ts-publish:
+  ts-test-publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -59,7 +59,7 @@ jobs:
         run: |
           npm config set init.author.name "Raccoons Bot"
           npm config set init-author-email "support@mercurial.finance"
-          npm version prerelease --preid=alpha.${GITHUB_SHA}
-          npm publish
+          npm version prerelease --preid=${GITHUB_SHA}
+          npm publish --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
