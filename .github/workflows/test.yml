@@ -8,17 +8,8 @@ on:
       - 'LICENSE'
       - '.editorconfig'
     branches:
-      - main
       - develop
       - staging
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'LICENSE'
-      - '.editorconfig'
-    branches:
-      - main
 
 jobs:
   ts-test:

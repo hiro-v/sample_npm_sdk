@@ -19,11 +19,6 @@ on:
     branches:
       - main
 
-  workflow_run:
-    workflows: [Continuous Integration]
-    types:
-      - completed
-
 jobs:
   # release:
   #   runs-on: ubuntu-latest
@@ -52,14 +47,19 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Install modules
         run: npm install
+      - name: Run tests
+        run: |
+          npm run test
       - name: Build
-        run: npm run build
+        run: |
+          npm run build
       - name: Add git commit tag to env
         run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
       - name: Publish to npm
         run: |
           npm config set init.author.name "Raccoons Bot"
           npm config set init-author-email "support@mercurial.finance"
-          npm publish --tag 0.0.1-${SHORT_SHA}
+          npm version prerelease --preid=alpha.${GITHUB_SHA}
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
