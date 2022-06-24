@@ -60,6 +60,6 @@ jobs:
         run: |
           npm config set init.author.name "Raccoons Bot"
           npm config set init-author-email "support@mercurial.finance"
-          npm publish --tag main-${SHORT_SHA}
+          npm publish --tag 0.0.1-${SHORT_SHA}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
