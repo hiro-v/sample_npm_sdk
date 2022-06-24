@@ -1,6 +1,15 @@
 name: Continuous Deployment to NPM
 
 on:
+  push:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'LICENSE'
+      - '.editorconfig'
+    branches:
+      - main
+
   pull_request:
     paths-ignore:
       - 'docs/**'
