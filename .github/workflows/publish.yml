@@ -20,7 +20,7 @@ on:
       - main
 
   workflow_run:
-    workflows: []
+    workflows: [Continuous Integration]
     types:
       - completed
 
