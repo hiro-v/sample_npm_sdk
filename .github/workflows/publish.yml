@@ -1,52 +1,52 @@
-name: Release & Publish
+name: Continuous Deployment to NPM
 
 on:
-  push:
-    tags:
-      - 'v*'
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'LICENSE'
+      - '.editorconfig'
+    branches:
+      - main
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
-          prerelease: false
+  # release:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+  #     - name: Create Release
+  #       id: create_release
+  #       uses: actions/create-release@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         tag_name: ${{ github.ref }}
+  #         release_name: ${{ github.ref }}
+  #         draft: false
+  #         prerelease: false
 
-  publish:
+  ts-publish:
+    needs: ts-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Setup .npmrc file to publish to npm
         uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Install modules
         run: npm install
       - name: Build
         run: npm run build
+      - name: Add git commit tag to env
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
       - name: Publish to npm
-        run: npm publish
+        run: |
+          npm config set init.author.name "Raccoons Bot"
+          npm config set init-author-email "support@mercurial.finance"
+          npm publish --tag main-${SHORT_SHA}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # - name: Setup .npmrc file to publish to NPM registry
-      #   uses: actions/setup-node@v1
-      #   with:
-      #     node-version: '14.x'
-      #     registry-url: 'https://registry.npmjs.org'
-          # scope: '@hiro'
-      # - run: npm run addscope
-      # - name: Publish to NPM registry
-      #   run: npm publish
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
