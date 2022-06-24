@@ -1,4 +1,4 @@
-name: Test
+name: Continuous Integration
 
 on:
   push:
@@ -9,7 +9,8 @@ on:
       - '.editorconfig'
     branches:
       - main
-      - master
+      - develop
+      - staging
   pull_request:
     paths-ignore:
       - 'docs/**'
@@ -18,17 +19,16 @@ on:
       - '.editorconfig'
     branches:
       - main
-      - master
 
 jobs:
-  test:
+  ts-test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os:
           - ubuntu-latest
           - windows-latest
-        node: [12.x, 14.x, 16.x]
+        node: [16.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -36,7 +36,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - name: Install modules
-        run: npm i
+      - name: Install dependencies
+        run: |
+          npm install
       - name: Run tests
-        run: npm run test
+        run: |
+          npm run test
