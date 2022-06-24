@@ -59,6 +59,7 @@ jobs:
         run: |
           npm config set init.author.name "Raccoons Bot"
           npm config set init-author-email "support@mercurial.finance"
+          git add . && git commit
           npm version prerelease --preid=${GITHUB_SHA}
           npm publish --tag next
         env:
